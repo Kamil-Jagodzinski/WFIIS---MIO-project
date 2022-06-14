@@ -7,6 +7,8 @@ from keras.callbacks import EarlyStopping
 from tensorflow.keras import regularizers
 from sklearn.model_selection import train_test_split
 from datetime import date, datetime
+import visualkeras
+from PIL import ImageFont
 
 ################################################################################################################################
 # wczytanie danych 
@@ -148,7 +150,7 @@ def compare_mlp(comp_with: int, single_model: bool):
             
             temp_x = X_train.copy()
             for mtx in temp_x:
-                noise = np.random.normal(0, 0.2, mtx.shape)
+                noise = np.random.normal(-0.2, 0.2, mtx.shape)
                 mtx = mtx + noise
             X_train_extend = np.concatenate( (X_train, temp_x[: len(temp_x)//4] ), axis=-3)
             Y_train_extend = np.concatenate( (Y_train, Y_train[: len(Y_train)//4] ), axis=0) 
@@ -258,6 +260,8 @@ else:
     compare_mlp(6, False)   #DataAugmentation
 
 if model_no in [1,2,3,4,5,6]:
+    font = ImageFont.truetype("arial.ttf", 12)  # using comic sans is strictly prohibited!
+    visualkeras.layered_view(model, legend=True, font=font).show()  # font is optional!
     predictions = model.predict(np.array(X_test))
     for i in range(len(X_test)):
         pl.subplot(1 + len(X_test)//12, 12, i+1)
